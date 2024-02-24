@@ -1,5 +1,4 @@
 from methods.logging import *
-import logging
 
 
 logging.basicConfig(
@@ -24,5 +23,5 @@ class DownloadClient:
             if d.name == self.name:
                 self.id = d.id
                 if d.enable != self.enabled:
-                    logging.info(f"Downlodaer {self.name} has a configuration mismatch, handling to be added")
+                    log_print(f"Downlodaer {self.name} has a configuration mismatch, handling to be added", "info")
                 break
