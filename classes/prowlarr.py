@@ -1,4 +1,4 @@
-from classes.download_client import DownloadClient
+#from classes.download_client import DownloadClient
 from classes.indexer import Indexer
 from methods.logging import *
 from prowlarr.models.indexer_resource import IndexerResource
@@ -31,7 +31,7 @@ class Prowlarr:
         if source=="prowlarr":
             self.download_client_mappings.update({(download_client.name) : { (source) : { "id": download_client.id, "name": download_client.name } } })
         else:
-            self.download_client_mappings[download_client.name].update({ (source) : { "id": download_client.id, "name": download_client.name } })
+            self.download_client_mappings[download_client["name"]].update({ (source) : { "id": download_client["id"], "name": download_client["name"] } })
 
     def update_indexer_torrent_client_mapping(
         self, 
