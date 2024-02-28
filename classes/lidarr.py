@@ -37,7 +37,12 @@ class Lidarr:
 
     def update_indexer(self, id_, data, forceSave: bool):
         force = str(forceSave).lower()
-        return requests.put(f"{self.host}/api/v3/indexer/{id_}?forceSave={force}?apikey={self.api}", data = json.dumps(data)) #self.client.get_indexer(id_ = id_)|data
+        headers = {
+            "Content-Type": "application/json",
+            "accept": "application/json",
+            'X-Api-Key': self.api,
+        }
+        return requests.put(f"{self.host}/api/v1/indexer/{id_}?forceSave={force}", headers = headers, data = json.dumps(data))
         # NOTE: PYARR does not support the force component, I opened an issue https://github.com/totaldebug/pyarr/issues/169
         #self.client.upd_indexer(id_=id_, data=indexer, forceSave=True)
 
