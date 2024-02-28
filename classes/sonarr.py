@@ -31,7 +31,7 @@ class Sonarr:
                         continue
                     if (indexer.download_client_id == v["prowlarr"]["id"]) and not (v["sonarr"]["id"]==sonarrIndexer["downloadClientId"]):
                         print(f"Parsing Prowlarr Indexer {indexer.name}")
-                        print(f"* Sonarr ID {sonarrIndexer['downloadClientId']} mismatched with {v['sonarr']['id']}, updating via API (not working in testing)")
+                        print(f"* Sonarr ID {sonarrIndexer['downloadClientId']} mismatched with {v['sonarr']['id']}, updating via API")
                         self.update_indexer(id_=sonarrIndexer["id"], data = sonarrIndexer|{ "downloadClientId": v["sonarr"]["id"] }, forceSave=True)
 
     def update_indexer(self, id_, data, forceSave: bool):

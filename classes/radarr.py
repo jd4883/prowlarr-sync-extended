@@ -31,7 +31,7 @@ class Radarr:
                         continue
                     if (indexer.download_client_id == v["prowlarr"]["id"]) and not (v["radarr"]["id"]==RadarrIndexer["downloadClientId"]):
                         print(f"Parsing Prowlarr Indexer {indexer.name}")
-                        print(f"* Radarr ID {RadarrIndexer['downloadClientId']} mismatched with {v['radarr']['id']}, updating via API (not working in testing)")
+                        print(f"* Radarr ID {RadarrIndexer['downloadClientId']} mismatched with {v['radarr']['id']}, updating via API")
                         self.update_indexer(id_=RadarrIndexer["id"], data = RadarrIndexer|{ "downloadClientId": v["radarr"]["id"] }, forceSave=True)
         #return message
 
