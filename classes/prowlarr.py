@@ -71,9 +71,9 @@ class Prowlarr:
 
     def parse_torrent_indexer(self, downloader, indexerObject, indexer, ratios, download_client_id):
         if indexer.needs_set_all(downloader):
-            log_print(f"Need to set indexer to Any for {indexer.name}, {indexer.privacy} and {indexer.protocol}, {indexer.download_client_id}")
+            log_print(f"Need to set indexer to Any for {indexer.name}, {indexer.privacy} and {indexer.protocol}, {indexer.download_client_id}", "info")
         elif indexer.needs_set_public(downloader):
-            log_print(f"Need to set indexer to public for {indexer.name}, {indexer.privacy} and {indexer.protocol}, {indexer.download_client_id}")
+            log_print(f"Need to set indexer to public for {indexer.name}, {indexer.privacy} and {indexer.protocol}, {indexer.download_client_id}", "info")
             force_save=ratios["public"].get("validation", False)
             indexer_id=str(indexer.id)
             packSeedTime = ratios["public"].get("packSeedTime", 0)
@@ -81,7 +81,7 @@ class Prowlarr:
             seedTime = ratios["public"].get("seedTime", 0)
             return self.update_indexer_torrent_client_mapping(download_client_id=download_client_id, force_save=force_save, indexer=indexerObject,indexer_id=indexer_id, packSeedTime = packSeedTime, seedRatio =seedRatio, seedTime = seedTime), "info"
         elif indexer.needs_set_private(downloader):
-            log_print(f"Need to set indexer to private for {indexer.name}, {indexer.privacy} and {indexer.protocol}, {indexer.download_client_id}")
+            log_print(f"Need to set indexer to private for {indexer.name}, {indexer.privacy} and {indexer.protocol}, {indexer.download_client_id}", "info")
             download_client_id=downloader.id, 
             force_save=ratios["private"].get("validation", True) 
             indexer_id=str(indexer.id)
