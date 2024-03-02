@@ -16,6 +16,7 @@ class DownloadClient:
         self.port = downloadClient.pop("port")
         self.privacy = downloadClient.pop("privacy")
         self.protocol = downloadClient.pop("protocol")
+        self.anime = downloadClient.get("anime", False)
         self.id = int()
     
     def parse_downloaders(self, downloaders):

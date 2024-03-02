@@ -48,13 +48,8 @@ if __name__ == '__main__':
     config = get_config("config.yaml")
     prowlarr = Prowlarr(api=getenv("PROWLARR_API", ""),host=getenv("PROWLARR_HOST", "http://localhost:9696"))
     download_clients = set_download_clients(config.pop("download_clients"), prowlarr.get_download_clients())
-    prowlarr.parse_indexers(download_clients = download_clients, ratios = config.pop("ratios"))    
-
-
+    prowlarr.parse_indexers(download_clients = download_clients, ratios = config.pop("ratios"))
     sonarr(prowlarr=prowlarr, download_clients=download_clients)
     radarr(prowlarr=prowlarr, download_clients=download_clients)
     lidarr(prowlarr=prowlarr, download_clients=download_clients)
     readarr(prowlarr=prowlarr, download_clients=download_clients)
-    
-    
-        
