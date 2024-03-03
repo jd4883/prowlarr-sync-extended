@@ -60,11 +60,11 @@ class Prowlarr:
                 i["value"] = packSeedTime
         return requests.put(f"{self.host}/api/v1/indexer/{indexer_id}?forceSave={str(force_save).lower()}", headers = headers, data = json.dumps(indexer))
 
-    def parse_indexers(self, download_clients, ratios):
+    def parse_indexers(self, download_clients, ratios, anime_identifiers):
         for i in self.indexers:
             self.parse_indexer(
                 indexerObject=i, 
-                indexer = Indexer(download_client_id = i.download_client_id, enabled = i.enable, id = i.id, name = i.name, privacy = i.privacy.split(".")[0], protocol = i.protocol.split(".")[0]), 
+                indexer = Indexer(download_client_id = i.download_client_id, enabled = i.enable, id = i.id, name = i.name, privacy = i.privacy.split(".")[0], protocol = i.protocol.split(".")[0], anime_identifiers=anime_identifiers), 
                 download_clients = download_clients, 
                 ratios = ratios
             )
