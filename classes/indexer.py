@@ -8,7 +8,7 @@ class Indexer:
         self.protocol = protocol
     
     def is_anime(self):
-        return ("anime" or "tokyo" or "nyaa") in self.name.lower()
+        return (("anime" or "tokyo" or "nyaa" or "subsplease" or "shana project") in self.name.lower()) or self.name.lower().startswith("ani")
     
     def needs_set_public(self, downloader):
         return (self.privacy=="public") and (self.download_client_id!=downloader.id) and (downloader.privacy=="public") and (downloader.anime==self.is_anime())

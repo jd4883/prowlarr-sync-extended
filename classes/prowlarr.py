@@ -3,6 +3,8 @@ from classes.indexer import Indexer
 from methods.logging import *
 from prowlarr.models.indexer_resource import IndexerResource
 import prowlarr
+import json
+import requests
 
 
 class Prowlarr:
@@ -36,24 +38,27 @@ class Prowlarr:
     def update_indexer_torrent_client_mapping(
         self, 
         download_client_id, 
-        indexer, 
         indexer_id, 
         force_save: True,
         packSeedTime: float, 
         seedRatio: float, 
         seedTime: float, 
     ):
-        indexer.download_client_id = download_client_id
-        for k, v in indexer:
-            if k == "fields":
-                for i in v:
-                    if i.name == "torrentBaseSettings.seedRatio":
-                        i.value=seedRatio    
-                    elif i.name == "torrentBaseSettings.seedTime":
-                        i.value=seedTime
-                    elif i.name == "torrentBaseSettings.packSeedTime":
-                        i.value=packSeedTime
-        return self.indexer.update_indexer(str(indexer_id), force_save=force_save, indexer_resource=indexer)
+        headers = {
+            "Content-Type": "application/json",
+            "accept": "application/json",
+            'X-Api-Key': self.api,
+        }
+        indexer = requests.get(f"{self.host}/api/v1/indexer/{indexer_id}", headers = headers).json()
+        indexer["downloadClientId"] = download_client_id
+        for i in indexer["fields"]:
+            if i["name"] == "torrentBaseSettings.seedRatio":
+                i["value"] = seedRatio    
+            elif i["name"] == "torrentBaseSettings.seedTime":
+                i["value"] = seedTime
+            elif i["name"] == "torrentBaseSettings.packSeedTime":
+                i["value"] = packSeedTime
+        return requests.put(f"{self.host}/api/v1/indexer/{indexer_id}?forceSave={str(force_save).lower()}", headers = headers, data = json.dumps(indexer))
 
     def parse_indexers(self, download_clients, ratios):
         for i in self.indexers:
@@ -79,7 +84,7 @@ class Prowlarr:
             packSeedTime = ratios["public"].get("packSeedTime", 0)
             seedRatio =ratios["public"].get("seedRatio", 0)
             seedTime = ratios["public"].get("seedTime", 0)
-            return self.update_indexer_torrent_client_mapping(download_client_id=download_client_id, force_save=force_save, indexer=indexerObject,indexer_id=indexer_id, packSeedTime = packSeedTime, seedRatio =seedRatio, seedTime = seedTime), "info"
+            return self.update_indexer_torrent_client_mapping(download_client_id=download_client_id, force_save=force_save, indexer_id=indexer_id, packSeedTime = packSeedTime, seedRatio =seedRatio, seedTime = seedTime), "info"
         elif indexer.needs_set_private(downloader):
             log_print(f"Need to set indexer to private for {indexer.name}, {indexer.privacy} and {indexer.protocol}, {indexer.download_client_id}", "info")
             download_client_id=downloader.id, 
@@ -88,7 +93,7 @@ class Prowlarr:
             packSeedTime = ratios["private"].get("packSeedTime", 80640) 
             seedRatio =ratios["private"].get("seedRatio", 3)
             seedTime = ratios["private"].get("seedTime", 80640)
-            return self.update_indexer_torrent_client_mapping(download_client_id=download_client_id, force_save=force_save, indexer=indexerObject,indexer_id=indexer_id, packSeedTime = packSeedTime, seedRatio =seedRatio, seedTime = seedTime), "info"
+            return self.update_indexer_torrent_client_mapping(download_client_id=download_client_id, force_save=force_save, indexer_id=indexer_id, packSeedTime = packSeedTime, seedRatio =seedRatio, seedTime = seedTime), "info"
         else:
             return f"No action needed for {indexer.name}, {indexer.privacy} and {indexer.protocol}, {indexer.download_client_id}", "debug"
     
