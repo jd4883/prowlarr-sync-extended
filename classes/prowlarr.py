@@ -49,7 +49,7 @@ class Prowlarr:
             "accept": "application/json",
             'X-Api-Key': self.api,
         }
-        indexer = requests.get(f"{self.host}/api/v1/indexer/{indexer_id}", headers = headers).json()
+        initial_indexer = indexer = requests.get(f"{self.host}/api/v1/indexer/{indexer_id}", headers = headers).json()
         indexer["downloadClientId"] = download_client_id
         for i in indexer["fields"]:
             if i["name"] == "torrentBaseSettings.seedRatio":
@@ -58,7 +58,8 @@ class Prowlarr:
                 i["value"] = seedTime
             elif i["name"] == "torrentBaseSettings.packSeedTime":
                 i["value"] = packSeedTime
-        return requests.put(f"{self.host}/api/v1/indexer/{indexer_id}?forceSave={str(force_save).lower()}", headers = headers, data = json.dumps(indexer))
+        result = requests.put(f"{self.host}/api/v1/indexer/{indexer_id}?forceSave={str(force_save).lower()}", headers = headers, data = json.dumps(indexer)) if not (initial_indexer==indexer) else None
+        return result
 
     def parse_indexers(self, download_clients, ratios, anime_identifiers):
         for i in self.indexers:
@@ -72,7 +73,8 @@ class Prowlarr:
     def parse_indexer(self, indexerObject, indexer, download_clients, ratios):
         for downloader in download_clients:
             result, notification = self.parse_torrent_indexer(downloader=downloader, indexerObject=indexerObject, indexer=indexer, ratios=ratios, download_client_id=downloader.id) if indexer.protocol == "torrent" else self.parse_usenet_indexer(downloader=downloader, indexerObject=indexerObject, indexer=indexer, download_client_id=downloader.id)
-            log_print(log=result, level=notification)
+            if result:
+                log_print(log=result, level=notification)
 
     def parse_torrent_indexer(self, downloader, indexerObject, indexer, ratios, download_client_id):
         if indexer.needs_set_all(downloader):
