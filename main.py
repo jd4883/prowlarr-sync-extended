@@ -33,7 +33,11 @@ def sonarr(prowlarr, download_clients):
 
 def radarr(prowlarr, download_clients):
     radarr = Radarr(api=getenv("RADARR_API", ""),host=getenv("RADARR_HOST", "http://localhost:7878"), download_clients = download_clients)
-    [prowlarr.update_download_clients_mapping(download_client=i, source="radarr") for i in radarr.download_clients]
+    for i in radarr.download_clients:
+        try:
+            prowlarr.update_download_clients_mapping(download_client=i, source="radarr")
+        except KeyError:
+            pass
     radarr.message_banner()
     [radarr.parse_indexer_discrepancies(indexer=prowlarrIndexer, download_client_mappings=prowlarr.download_client_mappings) for prowlarrIndexer in prowlarr.indexers]
 
