@@ -21,13 +21,21 @@ def set_download_clients(config, downloaders):
 
 def lidarr(prowlarr, download_clients):
     lidarr = Lidarr(api=getenv("LIDARR_API", ""),host=getenv("LIDARR_HOST", "http://localhost:8686"), download_clients = download_clients)
-    [prowlarr.update_download_clients_mapping(download_client=i, source="lidarr") for i in lidarr.download_clients]
+    for i in lidarr.download_clients:
+        try:
+            prowlarr.update_download_clients_mapping(download_client=i, source="lidarr")
+        except KeyError:
+            pass
     lidarr.message_banner()
     [lidarr.parse_indexer_discrepancies(indexer=prowlarrIndexer, download_client_mappings=prowlarr.download_client_mappings) for prowlarrIndexer in prowlarr.indexers]
 
 def sonarr(prowlarr, download_clients):
     sonarr = Sonarr(api=getenv("SONARR_API", ""),host=getenv("SONARR_HOST", "http://localhost:9696"), download_clients = download_clients)
-    [prowlarr.update_download_clients_mapping(download_client=i, source="sonarr") for i in sonarr.download_clients]
+    for i in sonarr.download_clients:
+        try:
+            prowlarr.update_download_clients_mapping(download_client=i, source="sonarr")
+        except KeyError:
+            pass
     sonarr.message_banner()
     [sonarr.parse_indexer_discrepancies(indexer=prowlarrIndexer, download_client_mappings=prowlarr.download_client_mappings) for prowlarrIndexer in prowlarr.indexers]
 
@@ -43,7 +51,11 @@ def radarr(prowlarr, download_clients):
 
 def readarr(prowlarr, download_clients):
     readarr = Readarr(api=getenv("READARR_API", "e4913b5299d3464fb8ce2dbdb1251531"),host=getenv("READARR_HOST", "http://localhost:8787"), download_clients = download_clients)
-    [prowlarr.update_download_clients_mapping(download_client=i, source="readarr") for i in readarr.download_clients]
+    for i in readarr.download_clients:
+        try:
+            prowlarr.update_download_clients_mapping(download_client=i, source="readarr")
+        except KeyError:
+            pass
     readarr.message_banner()
     [readarr.parse_indexer_discrepancies(indexer=prowlarrIndexer, download_client_mappings=prowlarr.download_client_mappings) for prowlarrIndexer in prowlarr.indexers]
 
